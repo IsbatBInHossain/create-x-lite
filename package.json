@@ -17,5 +17,11 @@
   "bugs": {
     "url": "https://github.com/IsbatBInHossain/create-x-lite/issues"
   },
-  "homepage": "https://github.com/IsbatBInHossain/create-x-lite#readme"
+  "homepage": "https://github.com/IsbatBInHossain/create-x-lite#readme",
+  "dependencies": {
+    "chalk": "^5.4.1",
+    "commander": "^14.0.0",
+    "ejs": "^3.1.10",
+    "fs-extra": "^11.3.0"
+  }
 }
