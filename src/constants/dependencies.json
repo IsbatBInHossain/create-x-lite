@@ -1,0 +1,25 @@
+{
+  "core": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "helmet": "^8.1.0"
+  },
+  "linting": {
+    "@eslint/js": "^9.32.0",
+    "eslint": "^9.32.0",
+    "typescript-eslint": "^8.38.0",
+    "globals": "^16.3.0",
+    "prettier": "^3.6.2"
+  },
+  "typescript": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.1.0",
+    "typescript": "^5.8.3"
+  },
+  "tools": {
+    "nodemon": "^3.1.10",
+    "tsx": "^4.20.3"
+  }
+}
