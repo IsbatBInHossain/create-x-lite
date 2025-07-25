@@ -3,7 +3,9 @@ import path from 'path';
 
 // Resolves the dependencies for a given template.
 export const resolveDependencies = (templatePath, rootPath) => {
-  const allDeps = fs.readJsonSync(path.join(rootPath, 'dependencies.json'));
+  const allDeps = fs.readJsonSync(
+    path.join(rootPath, 'src/constants/dependencies.json')
+  );
   const templateConfig = fs.readJsonSync(
     path.join(templatePath, 'template.json')
   );
