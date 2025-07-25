@@ -6,7 +6,7 @@ import fs from 'fs-extra';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import packageJson from './package.json' with { type: 'json' };
-import { generatePackageJson } from './src/utils/generatePackageJson.js';
+import { generatePackageJson } from './src/utils/packageManager.js';
 
 // Get dirname
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
