@@ -5,10 +5,10 @@ import chalk from 'chalk';
 import fs from 'fs-extra';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import ejs from 'ejs';
 import packageJson from './package.json' with { type: 'json' };
+import { generatePackageJson } from './utils/generatePackageJson.js';
 
-// This is the modern way to get __dirname in an ES module
+// Get dirname
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const program = new Command();
@@ -26,14 +26,8 @@ program
     // Copy the template directory to the new project path
     fs.copySync(templatePath, projectPath);
 
-    // Process the EJS template for package.json
-    const pkgJsonPath = path.join(projectPath, 'package.json.ejs');
-    const pkgJsonContent = fs.readFileSync(pkgJsonPath, 'utf8');
-    const renderedPkgJson = ejs.render(pkgJsonContent, { projectName: projectName });
-    
-    // Write the new package.json and remove the template file
-    fs.writeFileSync(path.join(projectPath, 'package.json'), renderedPkgJson);
-    fs.unlinkSync(pkgJsonPath);
+    const packageJsonContent = generatePackageJson(projectName);
+    fs.writeFileSync(path.join(projectPath, 'package.json'), packageJsonContent);
 
     console.log(chalk.green.bold('✅ Project scaffolded successfully!'));
     console.log(`\nNext steps:`);
