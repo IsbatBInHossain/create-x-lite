@@ -1,8 +1,11 @@
 {
   "name": "create-x-lite",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.0.1",
+  "description": "A modern scaffolding tool for Express.js projects.",
   "main": "index.js",
+  "bin": {
+    "create-x-lite": "index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -11,9 +14,9 @@
     "url": "git+https://github.com/IsbatBInHossain/create-x-lite.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Isbat Bin Hossain",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/IsbatBInHossain/create-x-lite/issues"
   },
