@@ -1,0 +1,21 @@
+{
+  "name": "create-x-lite",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IsbatBInHossain/create-x-lite.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/IsbatBInHossain/create-x-lite/issues"
+  },
+  "homepage": "https://github.com/IsbatBInHossain/create-x-lite#readme"
+}
