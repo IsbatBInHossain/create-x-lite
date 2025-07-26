@@ -10,7 +10,7 @@
     "index.js",
     "src/",
     "templates/",
-    "dependencies.json"
+    "features/"
   ],
   "repository": {
     "type": "git",
