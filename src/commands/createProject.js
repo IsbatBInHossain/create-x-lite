@@ -8,10 +8,27 @@ import {
   generatePackageJson,
 } from '../utils/packageManager.js';
 
+// Recursively finds and deletes all temporariy files (e.g. .gitkeep) in a directory.
+const cleanupFiles = directory => {
+  const items = fs.readdirSync(directory);
+
+  for (const item of items) {
+    const fullPath = path.join(directory, item);
+    const stat = fs.statSync(fullPath);
+    const tempFiles = ['.gitkeep'];
+
+    if (stat.isDirectory()) {
+      cleanupFiles(fullPath);
+    } else if (tempFiles.includes(path.basename(fullPath))) {
+      fs.unlinkSync(fullPath);
+    }
+  }
+};
+
 export const createProject = async (projectName, options) => {
   try {
     let projectPath = path.join(process.cwd(), projectName);
-    // --- Directory and Name Validation ---
+    // Directory and Name Validation
     if (projectName === '.') {
       projectPath = process.cwd();
       const files = fs.readdirSync(projectPath);
@@ -64,7 +81,33 @@ export const createProject = async (projectName, options) => {
       ],
     });
 
-    console.log(`You chose: ${language} with ${moduleSystem}`);
+    const structure = await select({
+      message: 'Which project structure do you prefer?',
+      choices: [
+        {
+          name: 'Feature-based (recommended)',
+          value: 'feature',
+          description:
+            'Group code by feature (e.g., /users, /products). Great for larger projects.',
+        },
+        {
+          name: 'Traditional',
+          value: 'traditional',
+          description:
+            'Separate code by responsibility (e.g., /controllers, /routes). Familiar MVC pattern.',
+        },
+      ],
+      theme: {
+        style: {
+          description: text => chalk.yellowBright(text),
+        },
+      },
+    });
+
+    //! Remove later
+    console.log(
+      chalk.bgRed(`You chose: ${language}, ${moduleSystem}, ${structure}`)
+    );
 
     console.log(
       chalk.blue(
@@ -77,7 +120,7 @@ export const createProject = async (projectName, options) => {
     const rootPath = path.resolve(options.dirname, '../../');
 
     // Determine which template to use based on the user's choice
-    const templateDir = `templates/${language}-${moduleSystem}-feature`;
+    const templateDir = `templates/${language}-${moduleSystem}-${structure}`;
     const templatePath = path.join(rootPath, templateDir);
 
     // Copy template files
@@ -103,6 +146,9 @@ export const createProject = async (projectName, options) => {
       path.join(projectPath, 'package.json'),
       newPackageJsonContent
     );
+    // Cleanup
+    console.log(chalk.gray('🧹 Cleaning up temporary files...'));
+    cleanupFiles(projectPath);
 
     console.log(chalk.green.bold('\n✅Project scaffolded successfully!'));
     console.log(`\nNext steps:`);
