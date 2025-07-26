@@ -67,8 +67,18 @@ export const createProject = async (projectName, options) => {
     const structure = await select({
       message: 'Which project structure do you prefer?',
       choices: [
-        { name: 'Feature-based (recommended)', value: 'feature' },
-        { name: 'Traditional (controllers, routes)', value: 'traditional' },
+        {
+          name: 'Feature-based (recommended)',
+          value: 'feature',
+          description:
+            'Group code by feature (e.g., /users, /products). Great for larger projects.',
+        },
+        {
+          name: 'Traditional',
+          value: 'traditional',
+          description:
+            'Separate code by responsibility (e.g., /controllers, /routes). Familiar MVC pattern.',
+        },
       ],
     });
 
@@ -88,7 +98,7 @@ export const createProject = async (projectName, options) => {
     const rootPath = path.resolve(options.dirname, '../../');
 
     // Determine which template to use based on the user's choice
-    const templateDir = `templates/${language}-${moduleSystem}-feature`;
+    const templateDir = `templates/${language}-${moduleSystem}-${structure}`;
     const templatePath = path.join(rootPath, templateDir);
 
     // Copy template files
