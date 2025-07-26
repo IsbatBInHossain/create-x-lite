@@ -105,9 +105,9 @@ export const createProject = async (projectName, options) => {
     });
 
     //! Remove later
-    console.log(
-      chalk.bgRed(`You chose: ${language}, ${moduleSystem}, ${structure}`)
-    );
+    // console.log(
+    //   chalk.bgRed(`You chose: ${language}, ${moduleSystem}, ${structure}`)
+    // );
 
     console.log(
       chalk.blue(
