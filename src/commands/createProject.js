@@ -1,16 +1,35 @@
 import chalk from 'chalk';
 import fs from 'fs-extra';
 import path from 'path';
+import { select } from '@inquirer/prompts';
 import {
   resolveDependencies,
   generatePackageJson,
 } from '../utils/packageManager.js';
 
-export const createProject = (projectName, options) => {
+export const createProject = async (projectName, options) => {
   console.log(
     chalk.blue('🚀 Creating project:'),
     chalk.green.bold(projectName)
   );
+
+  const language = await select({
+    message: 'Which language would you like to use?',
+    choices: [
+      {
+        name: 'TypeScript',
+        value: 'ts',
+        description: 'A typed superset of JavaScript.',
+      },
+      {
+        name: 'JavaScript',
+        value: 'js',
+        description: 'The classic, dynamic language.',
+      },
+    ],
+  });
+
+  console.log(`Test prompt: ${language}`);
 
   const projectPath = path.join(process.cwd(), projectName);
   const rootPath = path.resolve(options.dirname, '../../'); // Go up from src/commands to root

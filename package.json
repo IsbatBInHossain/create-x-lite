@@ -26,5 +26,8 @@
     "commander": "^14.0.0",
     "ejs": "^3.1.10",
     "fs-extra": "^11.3.0"
+  },
+  "devDependencies": {
+    "@inquirer/prompts": "^7.7.1"
   }
 }

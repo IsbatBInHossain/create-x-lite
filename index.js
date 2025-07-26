@@ -14,7 +14,7 @@ program
   .version('0.0.1')
   .command('create <project-name>')
   .description('Scaffold a new Express.js project')
-  .action(projectName => {
+  .action(async projectName => {
     createProject(projectName, {
       dirname: path.join(__dirname, 'src', 'commands'),
     });
