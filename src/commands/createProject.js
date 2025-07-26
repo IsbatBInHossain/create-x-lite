@@ -95,7 +95,9 @@ export const createProject = async (projectName, options) => {
     const newPackageJsonContent = generatePackageJson(
       projectName,
       dependencies,
-      devDependencies
+      devDependencies,
+      moduleSystem,
+      language
     );
     fs.writeFileSync(
       path.join(projectPath, 'package.json'),

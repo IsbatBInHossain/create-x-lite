@@ -30,14 +30,14 @@ export const resolveDependencies = (templatePath, rootPath) => {
 export const generatePackageJson = (
   projectName,
   dependencies,
-  devDependencies
+  devDependencies,
+  moduleSystem = 'esm',
+  language = 'ts'
 ) => {
   const newPackageJson = {
     name: projectName,
     version: '1.0.0',
     description: '',
-    main: 'dist/index.js',
-    type: 'module',
     scripts: {
       start: 'node dist/index.js',
       dev: 'nodemon',
@@ -51,5 +51,17 @@ export const generatePackageJson = (
     dependencies,
     devDependencies,
   };
+
+  if (moduleSystem === 'esm') {
+    newPackageJson.type = 'module';
+  } else {
+    newPackageJson.type = 'commonjs';
+  }
+  if (language === 'ts') {
+    newPackageJson.main = 'dist/index.js';
+  } else {
+    newPackageJson.main = 'src/index.js';
+  }
+
   return JSON.stringify(newPackageJson, null, 2);
 };
