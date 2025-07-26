@@ -1,0 +1,17 @@
+{
+  "dependencies": ["core.cors", "core.dotenv", "core.express", "core.helmet"],
+  "devDependencies": [
+    "linting.@eslint/js",
+    "linting.eslint",
+    "linting.typescript-eslint",
+    "linting.globals",
+    "linting.prettier",
+    "linting.eslint-config-prettier",
+    "typescript.@types/cors",
+    "typescript.@types/express",
+    "typescript.@types/node",
+    "typescript.typescript",
+    "tools.nodemon",
+    "tools.tsx"
+  ]
+}
