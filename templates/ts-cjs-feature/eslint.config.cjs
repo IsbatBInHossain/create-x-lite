@@ -1,10 +1,10 @@
-import js from '@eslint/js';
-import tseslint from 'typescript-eslint';
-import globals from 'globals';
-import { defineConfig } from 'eslint/config';
-import eslintConfigPrettier from 'eslint-config-prettier';
+const js = require('@eslint/js');
+const tseslint = require('typescript-eslint');
+const globals = require('globals');
+const { defineConfig } = require('eslint/config');
+const eslintConfigPrettier = require('eslint-config-prettier');
 
-export default defineConfig([
+module.exports = defineConfig([
   js.configs.recommended,
   { ignores: ['dist/', 'node_modules/'] },
   {
@@ -19,7 +19,7 @@ export default defineConfig([
     languageOptions: {
       parserOptions: {
         project: true,
-        tsconfigRootDir: import.meta.dirname,
+        tsconfigRootDir: __dirname,
       },
     },
     rules: {},
