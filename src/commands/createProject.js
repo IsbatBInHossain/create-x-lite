@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import fs from 'fs-extra';
 import path from 'path';
-import { select } from '@inquirer/prompts';
+import { select, confirm } from '@inquirer/prompts';
 import { ExitPromptError } from '@inquirer/core';
 import {
   resolveDependencies,
@@ -10,6 +10,33 @@ import {
 
 export const createProject = async (projectName, options) => {
   try {
+    let projectPath = path.join(process.cwd(), projectName);
+    // --- Directory and Name Validation ---
+    if (projectName === '.') {
+      projectPath = process.cwd();
+      const files = fs.readdirSync(projectPath);
+      if (files.length > 0) {
+        const proceed = await confirm({
+          message: `The current directory is not empty. Proceed?`,
+          default: false,
+        });
+        if (!proceed) throw new ExitPromptError();
+      }
+    } else {
+      if (fs.existsSync(projectPath)) {
+        const proceed = await confirm({
+          message: `Directory ${chalk.yellow(
+            projectName
+          )} already exists. Overwrite?`,
+          default: false,
+        });
+        if (!proceed) throw new ExitPromptError();
+        fs.emptyDirSync(projectPath); // Clear the directory if overwrite is confirmed
+      } else {
+        fs.ensureDirSync(projectPath);
+      }
+    }
+
     console.log(
       chalk.blue('🚀 Creating project:'),
       chalk.green.bold(projectName)
@@ -29,11 +56,29 @@ export const createProject = async (projectName, options) => {
       ],
     });
 
-    console.log(`Test prompt: ${language}`);
+    const moduleSystem = await select({
+      message: 'Which module system would you like to use?',
+      choices: [
+        { name: 'ESM (ECMAScript Modules)', value: 'esm' },
+        { name: 'CommonJS', value: 'cjs' },
+      ],
+    });
 
-    const projectPath = path.join(process.cwd(), projectName);
-    const rootPath = path.resolve(options.dirname, '../../'); // Go up from src/commands to root
-    const templatePath = path.join(rootPath, 'templates', 'ts-esm-feature');
+    console.log(`You chose: ${language} with ${moduleSystem}`);
+
+    console.log(
+      chalk.blue(
+        `✨ Scaffolding a ${
+          language === 'ts' ? 'TypeScript' : 'JavaScript'
+        } project...`
+      )
+    );
+
+    const rootPath = path.resolve(options.dirname, '../../');
+
+    // Determine which template to use based on the user's choice
+    const templateDir = `templates/${language}-${moduleSystem}-feature`;
+    const templatePath = path.join(rootPath, templateDir);
 
     // Copy template files
     fs.copySync(templatePath, projectPath, {
@@ -50,14 +95,16 @@ export const createProject = async (projectName, options) => {
     const newPackageJsonContent = generatePackageJson(
       projectName,
       dependencies,
-      devDependencies
+      devDependencies,
+      moduleSystem,
+      language
     );
     fs.writeFileSync(
       path.join(projectPath, 'package.json'),
       newPackageJsonContent
     );
 
-    console.log(chalk.green.bold('Project scaffolded successfully!'));
+    console.log(chalk.green.bold('\n✅Project scaffolded successfully!'));
     console.log(`\nNext steps:`);
     console.log(chalk.yellow(`  cd ${projectName}`));
     console.log(chalk.yellow(`  npm install`));
