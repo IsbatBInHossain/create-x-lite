@@ -1,0 +1,11 @@
+{
+  "dependencies": ["core.cors", "core.dotenv", "core.express", "core.helmet"],
+  "devDependencies": [
+    "linting.@eslint/js",
+    "linting.eslint",
+    "linting.globals",
+    "linting.prettier",
+    "linting.eslint-config-prettier",
+    "tools.nodemon"
+  ]
+}
