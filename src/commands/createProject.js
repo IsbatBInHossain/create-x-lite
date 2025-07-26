@@ -29,6 +29,16 @@ export const createProject = async (projectName, options) => {
       ],
     });
 
+    const moduleSystem = await select({
+      message: 'Which module system would you like to use?',
+      choices: [
+        { name: 'ESM (ECMAScript Modules)', value: 'esm' },
+        { name: 'CommonJS', value: 'cjs' },
+      ],
+    });
+
+    console.log(`You chose: ${language} with ${moduleSystem}`);
+
     console.log(
       chalk.blue(
         `✨ Scaffolding a ${
