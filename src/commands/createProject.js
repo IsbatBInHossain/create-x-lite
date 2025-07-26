@@ -8,10 +8,27 @@ import {
   generatePackageJson,
 } from '../utils/packageManager.js';
 
+// Recursively finds and deletes all temporariy files (e.g. .gitkeep) in a directory.
+const cleanupFiles = directory => {
+  const items = fs.readdirSync(directory);
+
+  for (const item of items) {
+    const fullPath = path.join(directory, item);
+    const stat = fs.statSync(fullPath);
+    const tempFiles = ['.gitkeep'];
+
+    if (stat.isDirectory()) {
+      cleanupFiles(fullPath);
+    } else if (tempFiles.includes(path.basename(fullPath))) {
+      fs.unlinkSync(fullPath);
+    }
+  }
+};
+
 export const createProject = async (projectName, options) => {
   try {
     let projectPath = path.join(process.cwd(), projectName);
-    // --- Directory and Name Validation ---
+    // Directory and Name Validation
     if (projectName === '.') {
       projectPath = process.cwd();
       const files = fs.readdirSync(projectPath);
@@ -129,6 +146,9 @@ export const createProject = async (projectName, options) => {
       path.join(projectPath, 'package.json'),
       newPackageJsonContent
     );
+    // Cleanup
+    console.log(chalk.gray('🧹 Cleaning up temporary files...'));
+    cleanupFiles(projectPath);
 
     console.log(chalk.green.bold('\n✅Project scaffolded successfully!'));
     console.log(`\nNext steps:`);
