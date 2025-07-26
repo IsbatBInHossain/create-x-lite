@@ -104,6 +104,11 @@ export const createProject = async (projectName, options) => {
       },
     });
 
+    const validation = await confirm({
+      message: 'Add Zod for schema validation?',
+      default: false, // Default to No
+    });
+
     //! Remove later
     // console.log(
     //   chalk.bgRed(`You chose: ${language}, ${moduleSystem}, ${structure}`)
