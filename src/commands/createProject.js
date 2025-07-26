@@ -80,6 +80,11 @@ export const createProject = async (projectName, options) => {
             'Separate code by responsibility (e.g., /controllers, /routes). Familiar MVC pattern.',
         },
       ],
+      theme: {
+        style: {
+          description: text => chalk.yellowBright(text),
+        },
+      },
     });
 
     //! Remove later
