@@ -136,7 +136,8 @@ export const createProject = async (projectName, options) => {
     // Resolve dependencies from config files
     const { dependencies, devDependencies } = resolveDependencies(
       templatePath,
-      rootPath
+      rootPath,
+      { validation }
     );
 
     // Generate and write the new package.json
