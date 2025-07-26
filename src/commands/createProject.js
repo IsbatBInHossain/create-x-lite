@@ -64,7 +64,18 @@ export const createProject = async (projectName, options) => {
       ],
     });
 
-    console.log(`You chose: ${language} with ${moduleSystem}`);
+    const structure = await select({
+      message: 'Which project structure do you prefer?',
+      choices: [
+        { name: 'Feature-based (recommended)', value: 'feature' },
+        { name: 'Traditional (controllers, routes)', value: 'traditional' },
+      ],
+    });
+
+    //! Remove later
+    console.log(
+      chalk.bgRed(`You chose: ${language}, ${moduleSystem}, ${structure}`)
+    );
 
     console.log(
       chalk.blue(
