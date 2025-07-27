@@ -1,0 +1,22 @@
+import { Router, Request, Response } from 'express';
+{{#if isFeature}}
+import { validate } from '../../core/middlewares/zod.middleware.js';
+import { createUserSchema } from './user.schema.js';
+{{else}}
+import { validate } from '../middlewares/zod.middleware.js';
+import { createUserSchema } from '../schemas/user.schema.js';
+{{/if}}
+
+const router = Router();
+
+// This route is now protected by Zod validation
+router.post('/', validate(createUserSchema), (req: Request, res: Response) => {
+  // If validation passes, the request body is safe to use
+  res.status(201).json({ message: 'User created successfully!', user: req.body });
+});
+
+{{#if isESM}}
+export default router;
+{{else}}
+export = router;
+{{/if}}

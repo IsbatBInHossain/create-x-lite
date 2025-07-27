@@ -1,0 +1,33 @@
+{{#if isESM}}
+import { Router } from 'express';
+{{#if isFeature}}
+import { validate } from '../../core/middlewares/zod.middleware.js';
+import { createUserSchema } from './user.schema.js';
+{{else}}
+import { validate } from '../middlewares/zod.middleware.js';
+import { createUserSchema } from '../schemas/user.schema.js';
+{{/if}}
+{{else}}
+const { Router } = require('express');
+{{#if isFeature}}
+const { validate } = require('../../core/middlewares/zod.middleware.js');
+const { createUserSchema } = require('./user.schema.js');
+{{else}}
+const { validate } = require('../middlewares/zod.middleware.js');
+const { createUserSchema } = require('../schemas/user.schema.js');
+{{/if}}
+{{/if}}
+
+const router = Router();
+
+// This route is now protected by Zod validation
+router.post('/', validate(createUserSchema), (req, res) => {
+  // If validation passes, the request body is safe to use
+  res.status(201).json({ message: 'User created successfully!', user: req.body });
+});
+
+{{#if isESM}}
+export default router;
+{{else}}
+module.exports = router;
+{{/if}}

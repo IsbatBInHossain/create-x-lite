@@ -160,6 +160,7 @@ export const createProject = async (projectName, options) => {
         rootPath,
         language,
         moduleSystem,
+        structure,
       });
     }
     // Cleanup

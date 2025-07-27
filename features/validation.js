@@ -3,17 +3,38 @@ import fs from 'fs-extra';
 import path from 'path';
 import handlebars from 'handlebars';
 
+const getUserRouteInfos = (isESM, isFeature) => {
+  const basePath = isFeature
+    ? './features/user/user.routes'
+    : './routes/user.routes';
+  const extension = isESM ? '.js' : '';
+
+  const userRouteImport = isESM
+    ? `import userRouter from '${basePath}${extension}';`
+    : `const userRouter = require('${basePath}');`;
+
+  const userRouteUse = `app.use('/api/v1/users', userRouter);`;
+
+  return { userRouteImport, userRouteUse };
+};
+
+const getTemplateFile = isTypeScript => {
+  return isTypeScript ? 'user.routes.ts.hbs' : 'user.routes.js.hbs';
+};
+
 export const injectValidation = ({
   projectPath,
   rootPath,
   language,
   moduleSystem,
+  structure,
 }) => {
   console.log(chalk.gray('🔧 Integrating Zod validation...'));
 
   const isTypeScript = language === 'ts';
   const isESM = moduleSystem === 'esm';
   const ext = isTypeScript ? 'ts' : 'js';
+  const isFeature = structure === 'feature';
 
   // Snippet and Destination Paths
   const snippetBase = path.join(rootPath, 'snippets', 'validation');
@@ -28,9 +49,17 @@ export const injectValidation = ({
 
   const middlewareFile = `zod.middleware.${ext}`;
   const schemaFile = `user.schema.${ext}`;
+  let destMiddlewarePath;
+  let destSchemaPath;
 
-  const destMiddlewarePath = path.join(projectPath, 'src', 'middlewares');
-  const destSchemaPath = path.join(projectPath, 'src', 'schemas');
+  if (isFeature) {
+    destMiddlewarePath = path.join(projectPath, 'src', 'core', 'middlewares');
+    destSchemaPath = path.join(projectPath, 'src', 'features', 'user');
+  } else {
+    destMiddlewarePath = path.join(projectPath, 'src', 'middlewares');
+    destSchemaPath = path.join(projectPath, 'src', 'schemas');
+  }
+
   fs.ensureDirSync(destMiddlewarePath);
   fs.ensureDirSync(destSchemaPath);
 
@@ -55,30 +84,51 @@ export const injectValidation = ({
     'handlebars',
     'user.routes.hbs'
   );
-  const templateString = fs.readFileSync(userRouteTemplatePath, 'utf8');
+
+  // Get template file
+  const templateFile = getTemplateFile(isTypeScript);
+  // Build a safe, absolute path
+  const templatePath = path.join(
+    rootPath,
+    'snippets',
+    'handlebars',
+    templateFile
+  );
+  const templateString = fs.readFileSync(templatePath, 'utf8');
   const template = handlebars.compile(templateString);
 
-  // Generate content from template
   const userRouteContent = template({
     isESM: isESM,
+    isFeature: isFeature,
   });
 
   // Write the new user route file
-  const userRoutePath = path.join(
-    projectPath,
-    'src',
-    'routes',
-    `user.routes.${ext}`
-  );
+  let userRoutePath;
+
+  if (isFeature) {
+    userRoutePath = path.join(
+      projectPath,
+      'src',
+      'features',
+      'user',
+      `user.routes.${ext}`
+    );
+  } else {
+    userRoutePath = path.join(
+      projectPath,
+      'src',
+      'routes',
+      `user.routes.${ext}`
+    );
+  }
+
+  fs.createFileSync(userRoutePath);
   fs.writeFileSync(userRoutePath, userRouteContent);
 
   const indexPath = path.join(projectPath, 'src', `index.${ext}`);
   let indexContent = fs.readFileSync(indexPath, 'utf8');
 
-  const userRouteImport = isESM
-    ? `import userRouter from './routes/user.routes.js';`
-    : `const userRouter = require('./routes/user.routes');`;
-  const userRouteUse = `app.use('/api/v1/users', userRouter);`;
+  const { userRouteImport, userRouteUse } = getUserRouteInfos(isESM, isFeature);
 
   indexContent = indexContent.replace(
     /(const app = express\(\);)/,

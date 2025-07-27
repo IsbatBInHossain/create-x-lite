@@ -1,11 +1,21 @@
 {{#if isESM}}
 import { Router } from 'express';
+{{#if isFeature}}
+import { validate } from '../../core/middlewares/zod.middleware.js';
+import { createUserSchema } from './user.schema.js';
+{{else}}
 import { validate } from '../middlewares/zod.middleware.js';
 import { createUserSchema } from '../schemas/user.schema.js';
+{{/if}}
 {{else}}
 const { Router } = require('express');
-const { validate } = require('../middlewares/zod.middleware.js');
-const { createUserSchema } = require('../schemas/user.schema.js');
+{{#if isFeature}}
+const { validate } = require('../../core/middlewares/zod.middleware');
+const { createUserSchema } = require('./user.schema');
+{{else}}
+const { validate } = require('../middlewares/zod.middleware');
+const { createUserSchema } = require('../schemas/user.schema');
+{{/if}}
 {{/if}}
 
 const router = Router();
