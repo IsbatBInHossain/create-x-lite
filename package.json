@@ -1,6 +1,6 @@
 {
   "name": "create-x-lite",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A modern, interactive CLI for scaffolding production-ready Express.js projects.",
   "main": "index.js",
   "bin": {
