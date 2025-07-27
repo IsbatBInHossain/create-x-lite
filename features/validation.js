@@ -3,15 +3,16 @@ import fs from 'fs-extra';
 import path from 'path';
 import handlebars from 'handlebars';
 
-const getUserRouteInfos = (isESM, isFeature) => {
+const getUserRouteInfos = (isESM, isFeature, isTypeScript) => {
   const basePath = isFeature
     ? './features/user/user.routes'
     : './routes/user.routes';
   const extension = isESM ? '.js' : '';
 
-  const userRouteImport = isESM
-    ? `import userRouter from '${basePath}${extension}';`
-    : `const userRouter = require('${basePath}');`;
+  const userRouteImport =
+    isESM || isTypeScript
+      ? `import userRouter from '${basePath}${extension}';`
+      : `const userRouter = require('${basePath}');`;
 
   const userRouteUse = `app.use('/api/v1/users', userRouter);`;
 
@@ -128,15 +129,22 @@ export const injectValidation = ({
   const indexPath = path.join(projectPath, 'src', `index.${ext}`);
   let indexContent = fs.readFileSync(indexPath, 'utf8');
 
-  const { userRouteImport, userRouteUse } = getUserRouteInfos(isESM, isFeature);
+  const { userRouteImport, userRouteUse } = getUserRouteInfos(
+    isESM,
+    isFeature,
+    isTypeScript
+  );
 
+  // Find any healthcheck import line and add user import after it
   indexContent = indexContent.replace(
-    /(const app = express\(\);)/,
+    /((?:import|const).*healthcheckRouter.*(?:from|require).*healthcheck\.routes.*[;"'])/,
     `$1\n${userRouteImport}`
   );
+
+  // Add route usage after healthcheck route
   indexContent = indexContent.replace(
-    /(app\.listen\()/s,
-    `${userRouteUse}\n\n$1`
+    /(app\.use\(["']\/api\/v1\/healthcheck["'], healthcheckRouter\);)/,
+    `$1\n\n${userRouteUse}`
   );
   fs.writeFileSync(indexPath, indexContent);
 };

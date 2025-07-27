@@ -1,8 +1,8 @@
 import 'dotenv/config';
-import express = require('express');
-import cors = require('cors');
-import helmet = require('helmet');
-import healthcheckRouter = require('./routes/healthcheck.routes');
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import healthcheckRouter from './routes/healthcheck.routes';
 
 const app = express();
 const port = process.env.PORT || 3000;
