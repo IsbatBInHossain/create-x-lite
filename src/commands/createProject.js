@@ -29,6 +29,8 @@ const cleanupFiles = directory => {
 export const createProject = async (projectName, options) => {
   try {
     let projectPath = path.join(process.cwd(), projectName);
+    const isYes = options.yes;
+
     // Directory and Name Validation
     if (projectName === '.') {
       projectPath = process.cwd();
@@ -60,55 +62,71 @@ export const createProject = async (projectName, options) => {
       chalk.green.bold(projectName)
     );
 
-    const language = await select({
-      message: 'Which language would you like to use?',
-      choices: [
-        {
-          name: 'TypeScript',
-          value: 'ts',
-        },
-        {
-          name: 'JavaScript',
-          value: 'js',
-        },
-      ],
-    });
+    const language = options.typescript
+      ? 'ts'
+      : isYes
+      ? 'js'
+      : await select({
+          message: 'Which language would you like to use?',
+          choices: [
+            {
+              name: 'TypeScript',
+              value: 'ts',
+            },
+            {
+              name: 'JavaScript',
+              value: 'js',
+            },
+          ],
+        });
 
-    const moduleSystem = await select({
-      message: 'Which module system would you like to use?',
-      choices: [
-        { name: 'ESM (ECMAScript Modules)', value: 'esm' },
-        { name: 'CommonJS', value: 'cjs' },
-      ],
-    });
+    const moduleSystem = options.commonjs
+      ? 'cjs'
+      : isYes
+      ? 'esm'
+      : await select({
+          message: 'Which module system would you like to use?',
+          choices: [
+            { name: 'ESM (ECMAScript Modules)', value: 'esm' },
+            { name: 'CommonJS', value: 'cjs' },
+          ],
+        });
 
-    const structure = await select({
-      message: 'Which project structure do you prefer?',
-      choices: [
-        {
-          name: 'Feature-based (recommended)',
-          value: 'feature',
-          description:
-            'Group code by feature (e.g., /users, /products). Great for larger projects.',
-        },
-        {
-          name: 'Traditional',
-          value: 'traditional',
-          description:
-            'Separate code by responsibility (e.g., /controllers, /routes). Familiar MVC pattern.',
-        },
-      ],
-      theme: {
-        style: {
-          description: text => chalk.yellowBright(text),
-        },
-      },
-    });
+    const structure = options.traditional
+      ? 'traditional'
+      : isYes
+      ? 'feature'
+      : await select({
+          message: 'Which project structure do you prefer?',
+          choices: [
+            {
+              name: 'Feature-based (recommended)',
+              value: 'feature',
+              description:
+                'Group code by feature (e.g., /users, /products). Great for larger projects.',
+            },
+            {
+              name: 'Traditional',
+              value: 'traditional',
+              description:
+                'Separate code by responsibility (e.g., /controllers, /routes). Familiar MVC pattern.',
+            },
+          ],
+          theme: {
+            style: {
+              description: text => chalk.yellowBright(text),
+            },
+          },
+        });
 
-    const validation = await confirm({
-      message: 'Add Zod for schema validation?',
-      default: false, // Default to No
-    });
+    const validation = options.zod
+      ? true
+      : isYes
+      ? false
+      : await confirm({
+          message: 'Add Zod for schema validation?',
+          default: false, // Default to No
+        });
 
     //! Remove later
     // console.log(
