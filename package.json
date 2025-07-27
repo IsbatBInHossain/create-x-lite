@@ -1,6 +1,6 @@
 {
   "name": "create-x-lite",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A modern, interactive CLI for scaffolding production-ready Express.js projects.",
   "main": "index.js",
   "bin": {
@@ -28,7 +28,7 @@
     "bootdev"
   ],
   "author": "Isbat Bin Hossain",
-  "license": "ISC",
+  "license": "MIT",
   "type": "module",
   "bugs": {
     "url": "https://github.com/IsbatBInHossain/create-x-lite/issues"
