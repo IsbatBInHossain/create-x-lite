@@ -2,7 +2,7 @@ import fs from 'fs-extra';
 import path from 'path';
 
 // Resolves the dependencies for a given template.
-export const resolveDependencies = (templatePath, rootPath) => {
+export const resolveDependencies = (templatePath, rootPath, options) => {
   const allDeps = fs.readJsonSync(
     path.join(rootPath, 'src/constants/dependencies.json')
   );
@@ -22,6 +22,11 @@ export const resolveDependencies = (templatePath, rootPath) => {
     const [category, pkg] = key.split('.');
     devDependencies[pkg] = allDeps[category][pkg];
   });
+
+  if (options.validation) {
+    const zodDep = allDeps.validators.zod;
+    dependencies.zod = zodDep;
+  }
 
   return { dependencies, devDependencies };
 };

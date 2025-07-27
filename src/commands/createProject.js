@@ -3,6 +3,7 @@ import fs from 'fs-extra';
 import path from 'path';
 import { select, confirm } from '@inquirer/prompts';
 import { ExitPromptError } from '@inquirer/core';
+import { injectValidation } from '../../features/validation.js';
 import {
   resolveDependencies,
   generatePackageJson,
@@ -104,6 +105,11 @@ export const createProject = async (projectName, options) => {
       },
     });
 
+    const validation = await confirm({
+      message: 'Add Zod for schema validation?',
+      default: false, // Default to No
+    });
+
     //! Remove later
     // console.log(
     //   chalk.bgRed(`You chose: ${language}, ${moduleSystem}, ${structure}`)
@@ -131,7 +137,8 @@ export const createProject = async (projectName, options) => {
     // Resolve dependencies from config files
     const { dependencies, devDependencies } = resolveDependencies(
       templatePath,
-      rootPath
+      rootPath,
+      { validation }
     );
 
     // Generate and write the new package.json
@@ -146,6 +153,16 @@ export const createProject = async (projectName, options) => {
       path.join(projectPath, 'package.json'),
       newPackageJsonContent
     );
+
+    if (validation) {
+      injectValidation({
+        projectPath,
+        rootPath,
+        language,
+        moduleSystem,
+        structure,
+      });
+    }
     // Cleanup
     console.log(chalk.gray('🧹 Cleaning up temporary files...'));
     cleanupFiles(projectPath);
