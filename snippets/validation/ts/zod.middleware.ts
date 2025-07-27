@@ -6,15 +6,15 @@ export const validate =
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       await schema.parseAsync({
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         body: req.body,
         query: req.query,
         params: req.params,
       });
       return next();
-    } catch (error) {
-      if (error instanceof ZodError) {
-        return res.status(400).json(error.flatten().fieldErrors);
+    } catch (err: unknown) {
+      if (err instanceof ZodError) {
+        return res.status(400).json(err.flatten().fieldErrors);
       }
-      return res.status(500).json({ message: 'Internal server error' });
     }
   };

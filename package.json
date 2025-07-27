@@ -10,7 +10,8 @@
     "index.js",
     "src/",
     "templates/",
-    "features/"
+    "features/",
+    "snippets/"
   ],
   "repository": {
     "type": "git",
@@ -37,9 +38,7 @@
     "@inquirer/prompts": "^7.7.1",
     "chalk": "^5.4.1",
     "commander": "^14.0.0",
-    "fs-extra": "^11.3.0"
-  },
-  "devDependencies": {
+    "fs-extra": "^11.3.0",
     "handlebars": "^4.7.8"
   }
 }

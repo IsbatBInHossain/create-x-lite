@@ -12,3 +12,5 @@ export const createUserSchema = z.object({
       .email('Not a valid email'),
   }),
 });
+
+export type CreateUserInput = z.infer<typeof createUserSchema>;

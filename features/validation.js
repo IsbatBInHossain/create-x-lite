@@ -7,7 +7,7 @@ const getUserRouteInfos = (isESM, isFeature, isTypeScript) => {
   const basePath = isFeature
     ? './features/user/user.routes'
     : './routes/user.routes';
-  const extension = isESM ? '.js' : '';
+  const extension = isESM || isTypeScript ? '.js' : '';
 
   const userRouteImport =
     isESM || isTypeScript
