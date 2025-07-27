@@ -21,7 +21,12 @@ program
   .version(pkg.version)
   .argument('[project-name]', 'The name for your new project')
   .description('Scaffold a new Express.js project')
-  .action(async projectName => {
+  .option('-t, --typescript', 'Scaffold a TypeScript project')
+  .option('-c, --commonjs', 'Use CommonJS module system')
+  .option('-T, --traditional', 'Use traditional MVC folder structure')
+  .option('--zod', 'Include Zod for schema validation')
+  .option('-y, --yes', 'Use default options for all prompts')
+  .action(async (projectName, options) => {
     try {
       let finalProjectName = projectName;
 
@@ -33,9 +38,8 @@ program
             value.length > 0 ? true : 'Project name cannot be empty.',
         });
       }
-      await createProject(finalProjectName, {
-        dirname: path.join(__dirname, 'src', 'commands'),
-      });
+      options.dirname = path.join(__dirname, 'src', 'commands');
+      await createProject(finalProjectName, options);
     } catch (err) {
       if (err instanceof ExitPromptError) {
         console.log(
