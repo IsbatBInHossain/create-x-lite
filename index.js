@@ -24,7 +24,7 @@ program
   .option('-t, --typescript', 'Scaffold a TypeScript project')
   .option('-c, --commonjs', 'Use CommonJS module system')
   .option('-T, --traditional', 'Use traditional MVC folder structure')
-  .option('-z, --zod', 'Include Zod for schema validation')
+  .option('--zod', 'Include Zod for schema validation')
   .option('-y, --yes', 'Use default options for all prompts')
   .action(async (projectName, options) => {
     try {
