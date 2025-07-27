@@ -29,6 +29,7 @@ const cleanupFiles = directory => {
 export const createProject = async (projectName, options) => {
   try {
     let projectPath = path.join(process.cwd(), projectName);
+    const formattedProjectName = path.basename(projectPath);
     const isYes = options.yes;
 
     // Directory and Name Validation
@@ -59,7 +60,7 @@ export const createProject = async (projectName, options) => {
 
     console.log(
       chalk.blue('🚀 Creating project:'),
-      chalk.green.bold(projectName)
+      chalk.green.bold(formattedProjectName)
     );
 
     const language = options.typescript
@@ -128,11 +129,6 @@ export const createProject = async (projectName, options) => {
           default: false, // Default to No
         });
 
-    //! Remove later
-    // console.log(
-    //   chalk.bgRed(`You chose: ${language}, ${moduleSystem}, ${structure}`)
-    // );
-
     console.log(
       chalk.blue(
         `✨ Scaffolding a ${
@@ -161,7 +157,7 @@ export const createProject = async (projectName, options) => {
 
     // Generate and write the new package.json
     const newPackageJsonContent = generatePackageJson(
-      projectName,
+      formattedProjectName,
       dependencies,
       devDependencies,
       moduleSystem,
@@ -187,7 +183,9 @@ export const createProject = async (projectName, options) => {
 
     console.log(chalk.green.bold('\n✅Project scaffolded successfully!'));
     console.log(`\nNext steps:`);
-    console.log(chalk.yellow(`  cd ${projectName}`));
+    if (projectName !== '.') {
+      console.log(chalk.yellow(`  cd ${formattedProjectName}`));
+    }
     console.log(chalk.yellow(`  npm install`));
     console.log(chalk.yellow(`  npm run dev`));
   } catch (err) {
