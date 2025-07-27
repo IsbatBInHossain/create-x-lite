@@ -1,8 +1,8 @@
 import chalk from 'chalk';
 import fs from 'fs-extra';
 import path from 'path';
+import handlebars from 'handlebars';
 
-// Injects the Zod validation feature into the scaffolded project.
 export const injectValidation = ({
   projectPath,
   rootPath,
@@ -14,9 +14,8 @@ export const injectValidation = ({
   const isTypeScript = language === 'ts';
   const isESM = moduleSystem === 'esm';
   const ext = isTypeScript ? 'ts' : 'js';
-  const routesExt = isTypeScript ? '.ts' : '.js';
 
-  // Snippet paths
+  // Snippet and Destination Paths
   const snippetBase = path.join(rootPath, 'snippets', 'validation');
   let snippetLangPath;
   if (isTypeScript) {
@@ -30,13 +29,12 @@ export const injectValidation = ({
   const middlewareFile = `zod.middleware.${ext}`;
   const schemaFile = `user.schema.${ext}`;
 
-  // Destination paths
   const destMiddlewarePath = path.join(projectPath, 'src', 'middlewares');
   const destSchemaPath = path.join(projectPath, 'src', 'schemas');
   fs.ensureDirSync(destMiddlewarePath);
   fs.ensureDirSync(destSchemaPath);
 
-  // Copy snippet files
+  // Copy the static snippet files
   fs.copySync(
     path.join(snippetLangPath, middlewareFile),
     path.join(destMiddlewarePath, middlewareFile)
@@ -46,47 +44,40 @@ export const injectValidation = ({
     path.join(destSchemaPath, schemaFile)
   );
 
-  // Create a new user route to demonstrate validation
-  const importOrRequire = mod => (isESM ? `import ${mod}` : `const ${mod}`);
-  const fromOrRequire = path =>
-    isESM ? `from '${path}';` : `= require('${path}');`;
+  // User route generation
+  console.log(
+    chalk.gray('  -> Generating user routes from Handlebars template...')
+  );
 
-  const userRouteContent = `${importOrRequire('{ Router }')} ${fromOrRequire(
-    'express'
-  )}
-${importOrRequire('{ validate }')} ${fromOrRequire(
-    `../middlewares/zod.middleware${routesExt}`
-  )}
-${importOrRequire('{ createUserSchema }')} ${fromOrRequire(
-    `../schemas/user.schema${routesExt}`
-  )}
+  const userRouteTemplatePath = path.join(
+    rootPath,
+    'snippets',
+    'handlebars',
+    'user.routes.hbs'
+  );
+  const templateString = fs.readFileSync(userRouteTemplatePath, 'utf8');
+  const template = handlebars.compile(templateString);
 
-const router = Router();
+  // Generate content from template
+  const userRouteContent = template({
+    isESM: isESM,
+  });
 
-// This route is protected by Zod validation
-router.post('/', validate(createUserSchema), (req, res) => {
-  // If validation passes, the request body is safe to use
-  res.status(201).json({ message: 'User created successfully!', user: req.body });
-});
-
-${isESM ? 'export default router;' : 'module.exports = router;'}`;
-
+  // Write the new user route file
   const userRoutePath = path.join(
     projectPath,
     'src',
     'routes',
     `user.routes.${ext}`
   );
-  fs.ensureFileSync(userRoutePath);
   fs.writeFileSync(userRoutePath, userRouteContent);
 
-  // Modify the main index file to use the new user route
   const indexPath = path.join(projectPath, 'src', `index.${ext}`);
   let indexContent = fs.readFileSync(indexPath, 'utf8');
 
-  const userRouteImport = `${importOrRequire('userRouter')} ${fromOrRequire(
-    `./routes/user.routes${routesExt}`
-  )}`;
+  const userRouteImport = isESM
+    ? `import userRouter from './routes/user.routes.js';`
+    : `const userRouter = require('./routes/user.routes');`;
   const userRouteUse = `app.use('/api/v1/users', userRouter);`;
 
   indexContent = indexContent.replace(
@@ -96,6 +87,6 @@ ${isESM ? 'export default router;' : 'module.exports = router;'}`;
   indexContent = indexContent.replace(
     /(app\.listen\()/s,
     `${userRouteUse}\n\n$1`
-  ); // More robust injection point
+  );
   fs.writeFileSync(indexPath, indexContent);
 };
