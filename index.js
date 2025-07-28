@@ -26,6 +26,7 @@ program
   .option('-T, --traditional', 'Use traditional MVC folder structure')
   .option('--zod', 'Include Zod for schema validation')
   .option('-y, --yes', 'Use default options for all prompts')
+  .option('--no-git', 'Do not initialize a git repository')
   .action(async (projectName, options) => {
     try {
       let finalProjectName = projectName;
@@ -39,6 +40,7 @@ program
         });
       }
       options.dirname = path.join(__dirname, 'src', 'commands');
+
       await createProject(finalProjectName, options);
     } catch (err) {
       if (err instanceof ExitPromptError) {
