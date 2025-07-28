@@ -86,11 +86,12 @@ This architecture allows the tool to be incredibly flexible and scalable.
 
 - **Interactive & Intuitive:** A step-by-step guided process to configure your project.
 - **Non-Interactive Mode:** Use CLI flags for automated, scripted project setup.
+- **Automatic Git Initialization:** Every new project is created as a Git repository with an initial commit.
 - **TypeScript and JavaScript:** First-class support for both languages.
 - **Modern and Legacy Modules:** Choose between modern **ESM** or legacy **CommonJS**.
 - **Flexible Folder Structures:** Select a **feature-based** or **traditional MVC-style** structure.
 - **Optional Schema Validation:** Add **Zod** for powerful, type-safe validation during setup.
-- **Out-of-the-Box Tooling:** Every project comes pre-configured with ESLint, Prettier, and Nodemon.
+- **Out-of-the-Box Tooling:** Every project comes pre-configured with ESLint, Prettier, Nodemon, and a `.gitignore` file.
 
 ## What You Get
 
@@ -102,6 +103,7 @@ my_ts_project/
 ├── nodemon.json
 ├── package.json
 ├── tsconfig.json
+├── .gitignore
 └── src
     └── core
     │   └── middlewares
@@ -146,6 +148,7 @@ Skip the interactive prompts using command-line flags:
 | `--commonjs`    | `-c`  | Use CommonJS instead of ESM          | ESM             |
 | `--traditional` | `-T`  | Use traditional structure            | Feature-based   |
 | `--zod`         |       | Add Zod for validation               | Disabled        |
+| `--no-git`      |       | Skip Git initialization              | Enabled         |
 
 ## Philosophy
 
