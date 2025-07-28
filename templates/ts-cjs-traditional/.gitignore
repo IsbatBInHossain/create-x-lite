@@ -1,0 +1,53 @@
+# Dependency directories
+node_modules/
+.pnp.*
+
+# Build output
+dist/
+build/
+.next/
+.nuxt/
+out/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Caches
+.eslintcache
+.cache/
+.parcel-cache/
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Local environment variables
+.env
+.env.local
+.env.development.local
+.env.production.local
+.env.test.local
+
+# IDE / OS specific
+.vscode/
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# Compiled binary addons
+/build/Release
+
+# Other
+coverage/
+.yarn/
