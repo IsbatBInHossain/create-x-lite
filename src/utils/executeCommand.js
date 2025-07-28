@@ -8,7 +8,7 @@ export const commandExists = command => {
 };
 
 export function executeCommand(command, args = [], options = {}) {
-  const { cwd, silent = false, shell = false } = options;
+  const { cwd, silent = true, shell = false } = options;
 
   if (!commandExists(command)) {
     throw new Error(

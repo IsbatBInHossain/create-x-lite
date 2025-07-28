@@ -8,6 +8,7 @@ import {
   resolveDependencies,
   generatePackageJson,
 } from '../utils/packageManager.js';
+import { initiateGit } from '../utils/initiateGit.js';
 
 // Recursively finds and deletes all temporariy files (e.g. .gitkeep) in a directory.
 const cleanupFiles = directory => {
@@ -180,6 +181,7 @@ export const createProject = async (projectName, options) => {
     // Cleanup
     console.log(chalk.gray('🧹 Cleaning up temporary files...'));
     cleanupFiles(projectPath);
+    initiateGit(projectPath);
 
     console.log(chalk.green.bold('\n✅Project scaffolded successfully!'));
     console.log(`\nNext steps:`);
