@@ -32,6 +32,7 @@ export const createProject = async (projectName, options) => {
     let projectPath = path.join(process.cwd(), projectName);
     const formattedProjectName = path.basename(projectPath);
     const isYes = options.yes;
+    // console.log(chalk.redBright(`Debug: ${JSON.stringify(options)}`)); //! for Debug only
 
     // Directory and Name Validation
     if (projectName === '.') {
@@ -138,6 +139,16 @@ export const createProject = async (projectName, options) => {
       )
     );
 
+    const noGit = !options.git;
+    const git = noGit
+      ? false
+      : isYes
+      ? true
+      : await confirm({
+          message: 'Initialize git repository?',
+          default: true,
+        });
+
     const rootPath = path.resolve(options.dirname, '../../');
 
     // Determine which template to use based on the user's choice
@@ -181,7 +192,9 @@ export const createProject = async (projectName, options) => {
     // Cleanup
     console.log(chalk.gray('🧹 Cleaning up temporary files...'));
     cleanupFiles(projectPath);
-    initiateGit(projectPath);
+    if (git) {
+      initiateGit(projectPath);
+    }
 
     console.log(chalk.green.bold('\n✅Project scaffolded successfully!'));
     console.log(`\nNext steps:`);
